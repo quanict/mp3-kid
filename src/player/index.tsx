@@ -1,4 +1,4 @@
-import Mp3Player from './callmenikk';
+import Mp3Player from './ReactSimplifiedPlayer';
 
 
 function Player(){
