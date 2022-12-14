@@ -1,4 +1,4 @@
-import Mp3Player from './ReactSimplifiedPlayer';
+import Mp3Player from './react-simplified-player';
 
 
 function Player(){

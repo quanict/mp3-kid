@@ -1,4 +1,7 @@
 // import { ReactSimplifiedPlayer } from "react-simplified-player"
+/**
+ * https://www.npmjs.com/package/react-simplified-player
+ */
 import { PlayerProps, QueueType } from "react-simplified-player/typings/playerTypes";
 
 import React, { useEffect, useRef, useState, FC } from "react";
@@ -8,14 +11,16 @@ import { loadSongAndPlay } from "react-simplified-player/utils/loadSongAndPlay";
 // import { PlayerProps } from "./typings/playerTypes";
 import { token } from "react-simplified-player/utils/token";
 import { initialConfig, ConfigsTypes, LoopType } from "react-simplified-player/typings/initialStates";
-import ConfigPanel from "./Components/Desktop/ConfigPanel";
-import SongContent from "./Components/Desktop/SongContent";
-import Player from "./Components/Desktop/Player";
-import MobilePlayer from "./Components/Mobile/MobilePlayer";
-import Queue from "./Components/Desktop/Queue";
-// import "./style/style.css";
-// import "./style/loader.css";
-// import "./style/mobile-style.css";
+import ConfigPanel from "react-simplified-player/Components/Desktop/ConfigPanel";
+import SongContent from "react-simplified-player/Components/Desktop/SongContent";
+import Player from "react-simplified-player/Components/Desktop/Player";
+import MobilePlayer from "react-simplified-player/Components/Mobile/MobilePlayer";
+import Queue from "react-simplified-player/Components/Desktop/Queue";
+import "react-simplified-player/style/style.css";
+import "react-simplified-player/style/loader.css";
+import "react-simplified-player/style/mobile-style.css";
+import {songs} from "../../audios";
+import {songs as scheduleSongs} from "../../audios/schedule";
 
 const ReactSimplifiedPlayer: FC<PlayerProps> = (props) => {
   const [control, setControl] = useState<ConfigsTypes>(initialConfig);
@@ -39,6 +44,7 @@ const ReactSimplifiedPlayer: FC<PlayerProps> = (props) => {
   useEffect(() => {
     const lastIndex: number = songData.length - 1;
 
+console.log(`============== debug list`, {songs, scheduleSongs})
     if (!props.song!.url.trim()) return;
 
     // when first song loads it adds 2 song togethers
@@ -360,10 +366,10 @@ const ReactSimplifiedPlayer: FC<PlayerProps> = (props) => {
           forwardSong={forwardSong}
           ref={currentRef}
           song_uri={songData[currentIndex]?.url}
-          setDuration={(time) => setDuration(time)}
-          toggleButton={(key) => onControlChange(key)}
+          setDuration={(time:any) => setDuration(time)}
+          toggleButton={(key:any) => onControlChange(key)}
           repeat={onChangeLoop}
-          skipToTime={(to) => {
+          skipToTime={(to:any) => {
             currentRef.current!.currentTime = to;
             setCurrentDuration(to);
           }}
@@ -403,10 +409,10 @@ const ReactSimplifiedPlayer: FC<PlayerProps> = (props) => {
           showQueue={props.showQueue!}
           color={props.mainColor}
           currentIndex={currentIndex}
-          onQueueOpen={(bool) => setIsOpenQueue(bool)}
+          onQueueOpen={(bool:boolean) => setIsOpenQueue(bool)}
           songs={songData}
           removeSong={removeSong}
-          playSong={(index) => {
+          playSong={(index:number) => {
             setControl((prev) => {
               return {
                 ...prev,
@@ -430,10 +436,10 @@ const ReactSimplifiedPlayer: FC<PlayerProps> = (props) => {
           popUp={popUp}
           ref={mobileViewRef}
           song_uri={songData[currentIndex]?.url}
-          setDuration={(time) => setDuration(time)}
-          toggleButton={(key) => onControlChange(key)}
+          setDuration={(time:any) => setDuration(time)}
+          toggleButton={(key:any) => onControlChange(key)}
           repeat={onChangeLoop}
-          skipToTime={(to) => {
+          skipToTime={(to:any) => {
             currentRef.current!.currentTime = to;
             setCurrentDuration(to);
           }}
