@@ -19,8 +19,8 @@ import Queue from "react-simplified-player/Components/Desktop/Queue";
 import "react-simplified-player/style/style.css";
 import "react-simplified-player/style/loader.css";
 import "react-simplified-player/style/mobile-style.css";
-import {songs} from "../../audios";
-import {songs as scheduleSongs} from "../../audios/schedule";
+import {songs} from "../../data";
+import {songs as scheduleSongs} from "../../data/schedule";
 
 const ReactSimplifiedPlayer: FC<PlayerProps> = (props) => {
   const [control, setControl] = useState<ConfigsTypes>(initialConfig);
@@ -43,9 +43,22 @@ const ReactSimplifiedPlayer: FC<PlayerProps> = (props) => {
 
   useEffect(() => {
     const lastIndex: number = songData.length - 1;
-
-console.log(`============== debug list`, {songs, scheduleSongs})
-    if (!props.song!.url.trim()) return;
+    //const {song} = props;
+    console.log(`============== debug list`, {songs, scheduleSongs})
+    if( songData.length < 1){
+      songs.map(function(s){
+        songData.push({
+          id:s.id,
+          song_cover:s.cover,
+          song_title:s.title,
+          song_artist:s.artist,
+          url:`files/${s.title}.mp3`,
+        } as QueueType);
+      });
+    }
+    
+    const song = songData[0];
+    if (!song!.url.trim()) return;
 
     // when first song loads it adds 2 song togethers
     if (
@@ -58,21 +71,20 @@ console.log(`============== debug list`, {songs, scheduleSongs})
       });
 
     //if last added song and clicked song urls are same do not add it in queue
-    if (
-      props.song!.url.trim() ===
-        songData[lastIndex]?.url.trim() 
-    )
+    if ( song!.url.trim() === songData[lastIndex]?.url.trim() ){
       return;
+    }
+    
 
-    setSongData((prev: any) => {
-      return [
-        ...prev,
-        {
-          ...props.song,
-          id: token().toString(),
-        },
-      ];
-    });
+    // setSongData((prev: any) => {
+    //   return [
+    //     ...prev,
+    //     {
+    //       ...song
+    //       //id: token().toString(),
+    //     },
+    //   ];
+    // });
     setCurrentIndex(songData.length)
     setControl((prev) => {
       return {
@@ -181,8 +193,11 @@ console.log(`============== debug list`, {songs, scheduleSongs})
 
   useEffect(() => {
     if (songData.length === 0) return;
-
-    const audio = new Audio(songData[currentIndex].url);
+    const song = songData[currentIndex];
+    if( typeof song === 'undefined'){
+      console.error(`got error at currentIndex:${currentIndex}`)
+    }
+    const audio = new Audio(song.url);
     const duration = audio.duration;
 
     setTimeLapse((prev) => {
@@ -337,6 +352,7 @@ console.log(`============== debug list`, {songs, scheduleSongs})
 
   return (
     <>
+      <div className="simplified-player-video"></div>
       <div className="react-simplified-player-container" ref={playerRef}>
         <SongContent
           openPlayer={() => setPopUp(true)}
@@ -493,16 +509,8 @@ console.log(`============== debug list`, {songs, scheduleSongs})
 };
 
 function Mp3Player(props: PlayerProps) {
-    let song: QueueType = {
-        song_cover: "./images/cartoon-boy-harry-playing-tennis-4o7dBW5-600.jpg",
-        song_title: "Clap Your Hands",
-        // id: "xxxx",
-        song_artist: "The Kiboomers Preschool Songs for Circle Time.",
-        url: "./files/Clap Your Hands - The Kiboomers Preschool Songs for Circle Time.mp3"
-    };
-
     return (
-        <ReactSimplifiedPlayer song={song} {...props} showQueue={true} />
+        <ReactSimplifiedPlayer {...props} showQueue={true} />
     );
 }
   
